@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>THE DON — AI Image Design & Consulting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Montserrat:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --gold:#c9a84c;
+    --gold-light:#e8c96d;
+    --gold-pale:#f5e9c4;
+    --black:#0a0a0a;
+    --black2:#111111;
+    --black3:#1a1a1a;
+    --white:#f5f0e8;
+    --gray:#888;
+  }
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--white);
+    font-family:'Montserrat',sans-serif;
+    overflow-x:hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none;
+    z-index:0;
+    opacity:.4;
+  }
+
+  /* NAV */
+  nav{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:100;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:1.5rem 4rem;
+    background:linear-gradient(to bottom,rgba(10,10,10,0.95),transparent);
+  }
+  .nav-logo{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.5rem;
+    font-weight:700;
+    letter-spacing:.25em;
+    color:var(--gold);
+    text-transform:uppercase;
+  }
+  .nav-links{
+    display:flex;
+    gap:2.5rem;
+    list-style:none;
+  }
+  .nav-links a{
+    text-decoration:none;
+    font-size:.7rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--white);
+    opacity:.7;
+    transition:opacity .2s, color .2s;
+  }
+  .nav-links a:hover{opacity:1;color:var(--gold);}
+
+  /* HERO */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    position:relative;
+    padding:6rem 2rem 4rem;
+    overflow:hidden;
+  }
+  .hero-bg-circle{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(120px);
+    pointer-events:none;
+  }
+  .hero-bg-circle.c1{
+    width:600px;height:600px;
+    top:-100px;left:-150px;
+    background:radial-gradient(circle,rgba(201,168,76,.15),transparent 70%);
+    animation:drift1 12s ease-in-out infinite alternate;
+  }
+  .hero-bg-circle.c2{
+    width:500px;height:500px;
+    bottom:-50px;right:-100px;
+    background:radial-gradient(circle,rgba(201,168,76,.1),transparent 70%);
+    animation:drift2 15s ease-in-out infinite alternate;
+  }
+  @keyframes drift1{from{transform:translate(0,0);}to{transform:translate(60px,40px);}}
+  @keyframes drift2{from{transform:translate(0,0);}to{transform:translate(-50px,30px);}}
+
+  .hero-eyebrow{
+    font-size:.65rem;
+    letter-spacing:.35em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:2rem;
+    opacity:0;
+    animation:fadeUp .8s .2s forwards;
+  }
+  .hero-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(5rem,14vw,11rem);
+    font-weight:700;
+    line-height:.9;
+    letter-spacing:-.01em;
+    text-transform:uppercase;
+    background:linear-gradient(135deg,var(--gold-pale) 0%,var(--gold) 40%,var(--gold-light) 70%,var(--white) 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    opacity:0;
+    animation:fadeUp .9s .4s forwards;
+  }
+  .hero-subtitle{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:clamp(1.1rem,2.5vw,1.6rem);
+    color:var(--white);
+    opacity:0;
+    margin-top:1.5rem;
+    letter-spacing:.05em;
+    animation:fadeUp .9s .6s forwards;
+  }
+
+  /* IMAGE PLACEHOLDER */
+  .hero-image-wrapper{
+    margin:3rem auto 2rem;
+    width:clamp(240px,40vw,380px);
+    aspect-ratio:3/4;
+    border:1px solid rgba(201,168,76,.3);
+    position:relative;
+    opacity:0;
+    animation:fadeUp 1s .8s forwards;
+  }
+  .hero-image-wrapper img{
+    width:100%;height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .img-placeholder{
+    width:100%;height:100%;
+    background:var(--black3);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:.75rem;
+    color:rgba(201,168,76,.4);
+    font-size:.65rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+  }
+  .img-placeholder svg{
+    width:36px;height:36px;
+    opacity:.4;
+  }
+  .hero-image-wrapper::after{
+    content:'';
+    position:absolute;
+    inset:-1px;
+    border:1px solid rgba(201,168,76,.15);
+    transform:translate(8px,8px);
+    pointer-events:none;
+  }
+
+  .hero-desc{
+    max-width:520px;
+    font-size:.8rem;
+    line-height:1.9;
+    color:rgba(245,240,232,.55);
+    letter-spacing:.05em;
+    margin:0 auto 2.5rem;
+    opacity:0;
+    animation:fadeUp .9s 1s forwards;
+  }
+  .hero-cta{
+    display:inline-block;
+    padding:.9rem 2.8rem;
+    border:1px solid var(--gold);
+    color:var(--gold);
+    font-size:.65rem;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    text-decoration:none;
+    transition:background .25s,color .25s;
+    opacity:0;
+    animation:fadeUp .9s 1.1s forwards;
+  }
+  .hero-cta:hover{background:var(--gold);color:var(--black);}
+
+  /* DIVIDER */
+  .divider{
+    display:flex;
+    align-items:center;
+    gap:1.5rem;
+    max-width:200px;
+    margin:0 auto;
+    padding:1rem 0;
+  }
+  .divider::before,.divider::after{
+    content:'';flex:1;
+    height:1px;
+    background:linear-gradient(to right,transparent,rgba(201,168,76,.4),transparent);
+  }
+  .divider-gem{
+    width:6px;height:6px;
+    background:var(--gold);
+    transform:rotate(45deg);
+    flex-shrink:0;
+  }
+
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(24px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  /* ABOUT STRIP */
+  .about-strip{
+    padding:5rem 4rem;
+    max-width:900px;
+    margin:0 auto;
+    text-align:center;
+  }
+  .section-eyebrow{
+    font-size:.6rem;
+    letter-spacing:.35em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:1.25rem;
+  }
+  .section-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(2rem,5vw,3.5rem);
+    font-weight:600;
+    line-height:1.1;
+    margin-bottom:1.5rem;
+  }
+  .section-body{
+    font-size:.82rem;
+    line-height:2;
+    color:rgba(245,240,232,.6);
+    letter-spacing:.04em;
+    max-width:650px;
+    margin:0 auto;
+  }
+
+  /* STATS ROW */
+  .stats-row{
+    display:flex;
+    justify-content:center;
+    gap:4rem;
+    padding:3rem 2rem;
+    flex-wrap:wrap;
+  }
+  .stat{text-align:center;}
+  .stat-num{
+    font-family:'Cormorant Garamond',serif;
+    font-size:3.5rem;
+    font-weight:700;
+    color:var(--gold);
+    line-height:1;
+  }
+  .stat-label{
+    font-size:.6rem;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    color:rgba(245,240,232,.45);
+    margin-top:.4rem;
+  }
+
+  /* PRODUCTS */
+  .products{
+    padding:6rem 2rem;
+    max-width:1100px;
+    margin:0 auto;
+  }
+  .products-header{text-align:center;margin-bottom:4rem;}
+  .products-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:1.5rem;
+  }
+
+  .product-card{
+    background:var(--black2);
+    border:1px solid rgba(201,168,76,.15);
+    padding:2.5rem;
+    position:relative;
+    overflow:hidden;
+    transition:border-color .3s,transform .3s;
+    cursor:default;
+  }
+  .product-card:hover{
+    border-color:rgba(201,168,76,.5);
+    transform:translateY(-6px);
+  }
+  .product-card::before{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;
+    height:2px;
+    background:linear-gradient(to right,transparent,var(--gold),transparent);
+    opacity:0;
+    transition:opacity .3s;
+  }
+  .product-card:hover::before{opacity:1;}
+
+  .product-number{
+    font-family:'Cormorant Garamond',serif;
+    font-size:4rem;
+    font-weight:700;
+    color:rgba(201,168,76,.08);
+    position:absolute;
+    top:.5rem;right:1.5rem;
+    line-height:1;
+    pointer-events:none;
+  }
+  .product-badge{
+    display:inline-block;
+    font-size:.55rem;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    border:1px solid rgba(201,168,76,.35);
+    color:var(--gold);
+    padding:.3rem .8rem;
+    margin-bottom:1.5rem;
+  }
+  .product-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.6rem;
+    font-weight:600;
+    line-height:1.2;
+    margin-bottom:1rem;
+  }
+  .product-desc{
+    font-size:.75rem;
+    line-height:1.9;
+    color:rgba(245,240,232,.5);
+    letter-spacing:.03em;
+    margin-bottom:1.75rem;
+  }
+  .product-price{
+    font-family:'Cormorant Garamond',serif;
+    font-size:2rem;
+    font-weight:700;
+    color:var(--gold);
+    margin-bottom:1.5rem;
+  }
+  .product-price span{
+    font-size:.85rem;
+    font-family:'Montserrat',sans-serif;
+    font-weight:300;
+    color:rgba(245,240,232,.4);
+    letter-spacing:.1em;
+  }
+  .product-features{
+    list-style:none;
+    margin-bottom:2rem;
+  }
+  .product-features li{
+    font-size:.7rem;
+    letter-spacing:.05em;
+    color:rgba(245,240,232,.55);
+    padding:.4rem 0;
+    border-bottom:1px solid rgba(255,255,255,.04);
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+  }
+  .product-features li::before{
+    content:'✦';
+    color:var(--gold);
+    font-size:.5rem;
+    flex-shrink:0;
+  }
+  .product-btn{
+    display:block;
+    width:100%;
+    padding:.85rem 1rem;
+    text-align:center;
+    font-size:.6rem;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    text-decoration:none;
+    border:1px solid rgba(201,168,76,.4);
+    color:var(--white);
+    transition:background .25s, color .25s, border-color .25s;
+  }
+  .product-btn:hover{
+    background:var(--gold);
+    color:var(--black);
+    border-color:var(--gold);
+  }
+  .product-btn.featured{
+    background:var(--gold);
+    color:var(--black);
+    border-color:var(--gold);
+  }
+  .product-btn.featured:hover{
+    background:var(--gold-light);
+    border-color:var(--gold-light);
+  }
+
+  /* FEATURED CARD */
+  .product-card.is-featured{
+    border-color:rgba(201,168,76,.35);
+    background:linear-gradient(135deg,#111,#161610);
+  }
+
+  /* CONSULTATION EXTRAS */
+  .consult-options{
+    display:flex;
+    gap:1rem;
+    margin-bottom:1.5rem;
+    flex-wrap:wrap;
+  }
+  .consult-option{
+    flex:1;
+    min-width:110px;
+    border:1px solid rgba(201,168,76,.2);
+    padding:.75rem;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .2s, background .2s;
+    position:relative;
+  }
+  .consult-option.selected{
+    border-color:var(--gold);
+    background:rgba(201,168,76,.06);
+  }
+  .consult-duration{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.5rem;
+    font-weight:600;
+    color:var(--gold);
+    line-height:1;
+  }
+  .consult-type{
+    font-size:.55rem;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    color:rgba(245,240,232,.45);
+    margin-top:.3rem;
+  }
+  .consult-price-small{
+    font-size:.65rem;
+    color:var(--gold);
+    margin-top:.4rem;
+  }
+
+  /* MARQUEE */
+  .marquee-wrap{
+    padding:2.5rem 0;
+    background:var(--black2);
+    border-top:1px solid rgba(201,168,76,.1);
+    border-bottom:1px solid rgba(201,168,76,.1);
+    overflow:hidden;
+    white-space:nowrap;
+  }
+  .marquee-track{
+    display:inline-block;
+    animation:marquee 22s linear infinite;
+  }
+  .marquee-track span{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.1rem;
+    font-style:italic;
+    letter-spacing:.1em;
+    color:rgba(201,168,76,.4);
+    padding:0 2rem;
+  }
+  .marquee-track .dot{
+    color:var(--gold);
+    font-style:normal;
+  }
+  @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  /* PROCESS */
+  .process{
+    padding:6rem 2rem;
+    max-width:1000px;
+    margin:0 auto;
+  }
+  .process-header{text-align:center;margin-bottom:4rem;}
+  .process-steps{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:2rem;
+  }
+  .process-step{
+    text-align:center;
+    padding:2rem 1rem;
+  }
+  .step-num{
+    font-family:'Cormorant Garamond',serif;
+    font-size:4rem;
+    font-weight:700;
+    color:rgba(201,168,76,.2);
+    line-height:1;
+    margin-bottom:1rem;
+  }
+  .step-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.3rem;
+    font-weight:600;
+    margin-bottom:.6rem;
+  }
+  .step-desc{
+    font-size:.72rem;
+    line-height:1.8;
+    color:rgba(245,240,232,.45);
+    letter-spacing:.03em;
+  }
+
+  /* CTA BANNER */
+  .cta-banner{
+    margin:2rem;
+    padding:5rem 2rem;
+    background:var(--black2);
+    border:1px solid rgba(201,168,76,.2);
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .cta-banner::before{
+    content:'THE DON';
+    position:absolute;
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(6rem,18vw,14rem);
+    font-weight:700;
+    color:rgba(201,168,76,.03);
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    white-space:nowrap;
+    pointer-events:none;
+    letter-spacing:.1em;
+  }
+  .cta-banner .section-title{margin-bottom:1rem;}
+  .cta-banner .section-body{margin-bottom:2.5rem;}
+  .cta-btn-group{
+    display:flex;
+    gap:1rem;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .btn-primary{
+    display:inline-block;
+    padding:1rem 2.5rem;
+    background:var(--gold);
+    color:var(--black);
+    font-size:.65rem;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    text-decoration:none;
+    font-weight:700;
+    transition:background .25s;
+  }
+  .btn-primary:hover{background:var(--gold-light);}
+  .btn-secondary{
+    display:inline-block;
+    padding:1rem 2.5rem;
+    border:1px solid rgba(201,168,76,.4);
+    color:var(--white);
+    font-size:.65rem;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    text-decoration:none;
+    transition:border-color .25s, color .25s;
+  }
+  .btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+
+  /* FOOTER */
+  footer{
+    padding:3rem 4rem;
+    border-top:1px solid rgba(201,168,76,.1);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:1.5rem;
+  }
+  .footer-logo{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.2rem;
+    font-weight:700;
+    color:var(--gold);
+    letter-spacing:.25em;
+    text-transform:uppercase;
+  }
+  .footer-copy{
+    font-size:.6rem;
+    letter-spacing:.15em;
+    color:rgba(245,240,232,.3);
+    text-transform:uppercase;
+  }
+
+  /* SCROLL REVEAL */
+  .reveal{
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .reveal.visible{
+    opacity:1;
+    transform:none;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">The Don</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Consult</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-circle c1"></div>
+  <div class="hero-bg-circle c2"></div>
+
+  <p class="hero-eyebrow">AI Image Design & Consulting</p>
+  <h1 class="hero-title">The Don</h1>
+  <p class="hero-subtitle">Where Artificial Intelligence Meets Luxury Vision</p>
+
+  <!-- REPLACE src="" WITH YOUR IMAGE URL -->
+  <div class="hero-image-wrapper">
+    <div class="img-placeholder">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+        <path d="M21 15l-5-5L5 21"/>
+      </svg>
+      <span>Your image here</span>
+    </div>
+  </div>
+
+  <p class="hero-desc">
+    Crafting bespoke AI-generated imagery and empowering creators with the knowledge to command AI tools at the highest level. Precision. Elegance. Dominance.
+  </p>
+  <a href="#products" class="hero-cta">Explore the Collection</a>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>AI Image Creation</span><span class="dot">✦</span>
+    <span>Luxury Aesthetics</span><span class="dot">✦</span>
+    <span>Prompt Mastery</span><span class="dot">✦</span>
+    <span>Personalised Editing</span><span class="dot">✦</span>
+    <span>1-on-1 Consulting</span><span class="dot">✦</span>
+    <span>The Don Method</span><span class="dot">✦</span>
+    <span>AI Image Creation</span><span class="dot">✦</span>
+    <span>Luxury Aesthetics</span><span class="dot">✦</span>
+    <span>Prompt Mastery</span><span class="dot">✦</span>
+    <span>Personalised Editing</span><span class="dot">✦</span>
+    <span>1-on-1 Consulting</span><span class="dot">✦</span>
+    <span>The Don Method</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about" class="about-strip reveal">
+  <p class="section-eyebrow">Who Is The Don</p>
+  <h2 class="section-title">Not Everyone Can See the Vision.<br>The Don Can Create It.</h2>
+  <p class="section-body">
+    THE DON is an elite AI image designer and editor operating at the intersection of technology and luxury. With a mastery of AI tools and an obsessive eye for detail, every image crafted under The Don's hand carries an unmistakable signature — refined, powerful, and intentional. Beyond creation, The Don is committed to raising the standard for everyone: teaching the art of the prompt, sharing a professional arsenal of ready-to-use commands, and offering direct access through exclusive one-on-one consulting.
+  </p>
+  <div class="divider" style="margin-top:3rem;"><div class="divider-gem"></div></div>
+</section>
+
+<!-- STATS -->
+<div class="stats-row reveal">
+  <div class="stat">
+    <div class="stat-num">100+</div>
+    <div class="stat-label">Pro Prompts Crafted</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">∞</div>
+    <div class="stat-label">Creative Possibilities</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">1</div>
+    <div class="stat-label">Standard — Excellence</div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section id="products" class="products">
+  <div class="products-header reveal">
+    <p class="section-eyebrow">The Collection</p>
+    <h2 class="section-title">Three Ways to Elevate<br>Your Visual Game</h2>
+  </div>
+
+  <div class="products-grid">
+
+    <!-- PRODUCT 1 -->
+    <div class="product-card reveal">
+      <div class="product-number">01</div>
+      <div class="product-badge">Foundation</div>
+      <h3 class="product-title">The Don's AI Prompt Mastery Book</h3>
+      <p class="product-desc">
+        Most people type vague words and hope for the best. This guide changes everything. Learn the exact framework The Don uses to craft concise, powerful prompts that get precise, stunning results — every single time.
+      </p>
+      <div class="product-price">$27 <span>/ digital download</span></div>
+      <ul class="product-features">
+        <li>The anatomy of a perfect AI prompt</li>
+        <li>Style, mood & lighting language decoded</li>
+        <li>Common mistakes and how to fix them</li>
+        <li>Real prompt examples with breakdowns</li>
+        <li>Works with MidJourney, DALL·E, Flux & more</li>
+      </ul>
+      <a href="#contact" class="product-btn">Get the Book</a>
+    </div>
+
+    <!-- PRODUCT 2 — FEATURED -->
+    <div class="product-card is-featured reveal">
+      <div class="product-number">02</div>
+      <div class="product-badge">Best Seller</div>
+      <h3 class="product-title">100 Professional AI Prompts Pack</h3>
+      <p class="product-desc">
+        Skip the learning curve. Get 100 battle-tested, professional-grade prompts — hand-crafted by The Don — ready to copy, paste, and personalise in seconds. Portraits, luxury branding, cinematic scenes, editorial fashion, and more.
+      </p>
+      <div class="product-price">$47 <span>/ instant access</span></div>
+      <ul class="product-features">
+        <li>100 prompts across 10 premium categories</li>
+        <li>Fully editable & customisable for your brand</li>
+        <li>Optimised for all major AI image platforms</li>
+        <li>Luxury, fashion, portrait & cinematic styles</li>
+        <li>Lifetime access + future updates included</li>
+      </ul>
+      <a href="#contact" class="product-btn featured">Get the Prompts</a>
+    </div>
+
+    <!-- PRODUCT 3 -->
+    <div class="product-card reveal" id="contact">
+      <div class="product-number">03</div>
+      <div class="product-badge">Exclusive</div>
+      <h3 class="product-title">1-on-1 with The Don</h3>
+      <p class="product-desc">
+        Direct access. Personal attention. Tailored strategy. Book a private session with The Don and walk away with clarity, skills, and a plan built specifically around your vision and goals.
+      </p>
+
+      <div class="consult-options">
+        <div class="consult-option selected" onclick="selectDuration(this,'30')">
+          <div class="consult-duration">30</div>
+          <div class="consult-type">Minutes</div>
+          <div class="consult-price-small">$99</div>
+        </div>
+        <div class="consult-option" onclick="selectDuration(this,'60')">
+          <div class="consult-duration">60</div>
+          <div class="consult-type">Minutes</div>
+          <div class="consult-price-small">$179</div>
+        </div>
+      </div>
+
+      <ul class="product-features">
+        <li>Live screen-share & real-time feedback</li>
+        <li>Prompt strategy tailored to your niche</li>
+        <li>Workflow audit & tool recommendations</li>
+        <li>Session recording sent to you after</li>
+        <li>Follow-up Q&A (24hrs post-session)</li>
+      </ul>
+      <a href="mailto:hello@thedon.ai" class="product-btn">Book a Session — $99</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" class="process">
+  <div class="process-header reveal">
+    <p class="section-eyebrow">The Method</p>
+    <h2 class="section-title">How The Don Works</h2>
+  </div>
+  <div class="process-steps">
+    <div class="process-step reveal">
+      <div class="step-num">01</div>
+      <h3 class="step-title">Vision</h3>
+      <p class="step-desc">Every great image starts with a clear intention. Define the feeling, the aesthetic, the story you want to tell.</p>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">02</div>
+      <h3 class="step-title">Prompt</h3>
+      <p class="step-desc">The prompt is the brush. Precise language, layered with style and technical parameters, is the secret weapon.</p>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">03</div>
+      <h3 class="step-title">Refine</h3>
+      <p class="step-desc">Raw AI output is a draft. The Don's eye for luxury detail elevates it to something undeniably polished.</p>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">04</div>
+      <h3 class="step-title">Deliver</h3>
+      <p class="step-desc">The final image is yours — sharp, intentional, and impossible to ignore. Delivered with full rights and no compromise.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner reveal">
+  <p class="section-eyebrow">Ready to Elevate?</p>
+  <h2 class="section-title">The Game Has Changed.<br>Are You Playing at the Right Level?</h2>
+  <p class="section-body">
+    Whether you're buying the book, unlocking 100 pro prompts, or sitting one-on-one with The Don — your next level starts here.
+  </p>
+  <div class="cta-btn-group">
+    <a href="#products" class="btn-primary">Shop the Collection</a>
+    <a href="mailto:hello@thedon.ai" class="btn-secondary">Book a Consult</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">The Don</div>
+  <div class="footer-copy">© 2026 The Don · AI Image Design & Consulting · All Rights Reserved</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals=document.querySelectorAll('.reveal');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}
+    });
+  },{threshold:.12});
+  reveals.forEach(r=>obs.observe(r));
+
+  // Consult duration selector
+  function selectDuration(el,mins){
+    document.querySelectorAll('.consult-option').forEach(o=>o.classList.remove('selected'));
+    el.classList.add('selected');
+    const btn=el.closest('.product-card').querySelector('.product-btn');
+    const price=mins==='30'?'$99':'$179';
+    btn.textContent=`Book a Session — ${price}`;
+  }
+</script>
+</body>
+</html>
